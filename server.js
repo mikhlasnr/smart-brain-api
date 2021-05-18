@@ -25,7 +25,7 @@ app.post("/signin", signin.handleSignin(db, bcrypt));
 app.post("/register", register.handleRegister(db, bcrypt));
 
 app.get("/", (req, res) => {
-  res("success");
+  res.send("server is running");
 });
 
 app.get("/profile/:id", (req, res) => {
