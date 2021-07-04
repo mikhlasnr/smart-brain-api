@@ -13,15 +13,25 @@ const cors = require("cors");
 
 const knex = require("knex");
 
-const db = knex({
-  client: "pg",
-  connection: {
-    host: "127.0.0.1",
-    user: "root",
-    password: "",
-    database: "smart-brain",
-  },
-});
+const db = IsOnDev
+  ? knex({
+      client: "pg",
+      connection: {
+        host: "127.0.0.1",
+        user: "postgres",
+        password: "123",
+        database: "smart-brain",
+      },
+    })
+  : knex({
+      client: "pg",
+      connection: {
+        connectionString: process.env.DATABASE_URL,
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      },
+    });
 
 // const db = knex({
 //   client: "pg",
