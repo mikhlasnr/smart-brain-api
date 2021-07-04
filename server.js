@@ -1,26 +1,55 @@
+const IsOnDev = true;
+
+module.exports = {
+  IsOnDev,
+};
+
+// ! Import dependencies
 const express = require("express");
+const app = express();
+
 const bcrypt = require("bcryptjs");
 const cors = require("cors");
-const app = express();
+
 const knex = require("knex");
+
 const db = knex({
   client: "pg",
   connection: {
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-      rejectUnauthorized: false,
-    },
+    host: "127.0.0.1",
+    user: "root",
+    password: "",
+    database: "smart-brain",
   },
 });
 
+// const db = knex({
+//   client: "pg",
+//   connection: {
+//     connectionString: process.env.DATABASE_URL,
+//     ssl: {
+//       rejectUnauthorized: false,
+//     },
+//   },
+// });
+// ! Use Middleware
+app.use(express.json());
+app.use(cors());
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`app is running on port ${PORT}`);
+});
+
+console.log(PORT);
+
+// ! Import Controllers
 const register = require("./controllers/register");
 const signin = require("./controllers/signin");
 const profile = require("./controllers/profile");
 const image = require("./controllers/image");
 
-app.use(express.json());
-app.use(cors());
-
+// ! Cretea Router Backend
 app.post("/signin", signin.handleSignin(db, bcrypt));
 app.post("/register", register.handleRegister(db, bcrypt));
 
@@ -37,11 +66,3 @@ app.put("/image", (req, res) => {
 app.post("/imageurl", (req, res) => {
   image.handleApiCall(req, res);
 });
-
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`app is running on port ${PORT}`);
-});
-
-console.log(PORT);
